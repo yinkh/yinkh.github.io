@@ -1,0 +1,763 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Blog">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.3">
+    
+    
+      
+        <title>FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出 - Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3b61ea93.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Blog" class="md-header-nav__button md-logo" aria-label="Blog">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Blog
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Blog" class="md-nav__button md-logo" aria-label="Blog">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    问题现象
+  </a>
+  
+    <nav class="md-nav" aria-label="问题现象">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-gunicornuvicorn" class="md-nav__link">
+    1 启动gunicorn+uvicorn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-accesslog" class="md-nav__link">
+    2 清空access.log文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-10apiaccesslog" class="md-nav__link">
+    3 调用10次Api，此时access.log内容如下：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-logrotate" class="md-nav__link">
+    4 logrotate 配置如下：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-logrotategunicornusr1" class="md-nav__link">
+    5 手动调用logrotate命令进行日志压缩或者直接像gunicorn发送USR1信号:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-gunicornusr1gunicornusr1" class="md-nav__link">
+    6 Gunicorn日志提示已经正常处理了USR1信号（在gunicorn中，USR1信号表示日志文件发生变更，需要重新打开日志文件）：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-10apiaccesslog" class="md-nav__link">
+    7 再次调用10次Api，access.log并未记录到最新的调用记录。
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    环境信息
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logrotate" class="md-nav__link">
+    logrotate
+  </a>
+  
+    <nav class="md-nav" aria-label="logrotate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copytruncate" class="md-nav__link">
+    copytruncate
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    问题修复
+  </a>
+  
+    <nav class="md-nav" aria-label="问题修复">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gunicorn" class="md-nav__link">
+    Gunicorn源码分析
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uvicorn" class="md-nav__link">
+    Uvicorn源码分析
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    解决方案
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    问题现象
+  </a>
+  
+    <nav class="md-nav" aria-label="问题现象">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-gunicornuvicorn" class="md-nav__link">
+    1 启动gunicorn+uvicorn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-accesslog" class="md-nav__link">
+    2 清空access.log文件
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-10apiaccesslog" class="md-nav__link">
+    3 调用10次Api，此时access.log内容如下：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-logrotate" class="md-nav__link">
+    4 logrotate 配置如下：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-logrotategunicornusr1" class="md-nav__link">
+    5 手动调用logrotate命令进行日志压缩或者直接像gunicorn发送USR1信号:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-gunicornusr1gunicornusr1" class="md-nav__link">
+    6 Gunicorn日志提示已经正常处理了USR1信号（在gunicorn中，USR1信号表示日志文件发生变更，需要重新打开日志文件）：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-10apiaccesslog" class="md-nav__link">
+    7 再次调用10次Api，access.log并未记录到最新的调用记录。
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    环境信息
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logrotate" class="md-nav__link">
+    logrotate
+  </a>
+  
+    <nav class="md-nav" aria-label="logrotate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copytruncate" class="md-nav__link">
+    copytruncate
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    问题修复
+  </a>
+  
+    <nav class="md-nav" aria-label="问题修复">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gunicorn" class="md-nav__link">
+    Gunicorn源码分析
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uvicorn" class="md-nav__link">
+    Uvicorn源码分析
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    解决方案
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出</h1>
+                
+                <h2 id="_1">问题现象</h2>
+<p>Fastapi使用Gunicorn+Uvicorn部署生产环境，使用Logrotate压缩access日志后，新的Access日志无法正常输出。</p>
+<blockquote>
+<p><a href="https://github.com/encode/uvicorn/issues/896">Uvicorn issue</a></p>
+</blockquote>
+<h3 id="1-gunicornuvicorn">1 启动gunicorn+uvicorn</h3>
+<pre><code class="language-shell">(venv) [root@localhost task_registry_center]# gunicorn -w 2 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker --access-logfile log/access.log main:app
+[2020-12-16 17:09:41 +0800] [3330] [INFO] Starting gunicorn 20.0.4
+[2020-12-16 17:09:41 +0800] [3330] [INFO] Listening at: http://0.0.0.0:8000 (3330)
+[2020-12-16 17:09:41 +0800] [3330] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2020-12-16 17:09:41 +0800] [3332] [INFO] Booting worker with pid: 3332
+[2020-12-16 17:09:41 +0800] [3333] [INFO] Booting worker with pid: 3333
+</code></pre>
+<h3 id="2-accesslog">2 清空access.log文件</h3>
+<pre><code class="language-shell">now access log file is empty
+[root@localhost log]# pwd
+/data/task_registry_center/log
+[root@localhost log]# ll
+total 20
+-rw-r--r--. 1 root root    0 Dec 16 16:56 access.log
+-rw-r--r--. 1 root root    0 Dec 16 16:41 client.log
+-rw-r--r--. 1 root root    0 Dec 16 16:56 debug.log
+-rw-r--r--. 1 root root    0 Dec 16 16:41 elk_client.log
+-rw-r--r--. 1 root root 5402 Dec 16 17:08 error.log
+-rw-r--r--. 1 root root    0 Dec 16 16:41 id_server.log
+-rw-r--r--. 1 root root 4029 Dec 16 17:09 main.log
+-rw-r--r--. 1 root root 4480 Dec 16 17:10 tasks.log
+</code></pre>
+<h3 id="3-10apiaccesslog">3 调用10次Api，此时access.log内容如下：</h3>
+<pre><code class="language-shell">192.168.11.1:60477 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60478 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60479 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60480 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60481 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60482 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60483 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60484 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60485 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60486 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+</code></pre>
+<h3 id="4-logrotate">4 logrotate 配置如下：</h3>
+<pre><code class="language-shell">[root@localhost ~]# cat /etc/logrotate.d/task_registry_center                                                                                                                                                   
+/data/task_registry_center/log/*.log {                                                                                                                                  
+        size 1M                                                                                                                                                         
+        rotate 20                                                                                                                                                       
+        compress                                                                                                                                                        
+        nodelaycompress                                                                                                                                                 
+        dateformat -%Y-%m-%d-%s                                                                                                                                         
+        dateext                                                                                                                                                         
+        missingok                                                                                                                                                       
+        notifempty                                                                                                                                                      
+        postrotate                                                                                                                                                      
+            killall -s USR1 gunicorn                                                                                                                  13,9          All
+        endscript
+}
+</code></pre>
+<h3 id="5-logrotategunicornusr1">5 手动调用logrotate命令进行日志压缩或者直接像gunicorn发送USR1信号:</h3>
+<pre><code>手动调用logrotate命令： `[root@localhost ~]# /usr/sbin/logrotate -f /etc/logrotate.d/task_registry_center`
+
+发送USR1信号： `killall -s USR1 gunicorn`
+</code></pre>
+<h3 id="6-gunicornusr1gunicornusr1">6 Gunicorn日志提示已经正常处理了USR1信号（在gunicorn中，USR1信号表示日志文件发生变更，需要重新打开日志文件）：</h3>
+<pre><code class="language-shell">[2020-12-16 17:12:16 +0800] [3330] [INFO] Handling signal: usr1
+[2020-12-16 17:12:16 +0800] [3330] [INFO] Handling signal: usr1
+[2020-12-16 17:12:16 +0800] [3330] [INFO] Handling signal: usr1
+[2020-12-16 17:12:16 +0800] [3330] [INFO] Handling signal: usr1
+</code></pre>
+<h3 id="7-10apiaccesslog">7 再次调用10次Api，access.log并未记录到最新的调用记录。</h3>
+<ul>
+<li>日志目录，可见新的access.log日志为空：</li>
+</ul>
+<pre><code class="language-shell">[root@localhost log]# ll
+total 20
+-rw-r--r--. 1 root root   0 Dec 16 17:12 access.log
+-rw-r--r--. 1 root root 125 Dec 16 17:11 access.log-2020-12-16-1608109936.gz
+</code></pre>
+<ul>
+<li><code>access.log-2020-12-16-1608109936.gz</code>文件内容依旧为前10次的API调用记录:</li>
+</ul>
+<pre><code class="language-shell">192.168.11.1:60477 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60478 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60479 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60480 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60481 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60482 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60483 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60484 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60485 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+192.168.11.1:60486 - &quot;GET /api/client?page_size=10&amp;page=1 HTTP/1.1&quot; 200
+</code></pre>
+<h2 id="_2">环境信息</h2>
+<ul>
+<li>系统 Centos7</li>
+<li>Python 3.8.3</li>
+<li>gunicorn 20.0.4</li>
+<li>uvicorn 0.13.1</li>
+<li>fastapi 0.62.0</li>
+</ul>
+<h2 id="logrotate">logrotate</h2>
+<p>logrotate有两个工作模式，分别为<code>copytruncate</code>和<code>create</code>，简单说下两种模式的区别。</p>
+<p>在介绍create模式之前，需要先介绍下linux系统中文件是通过inode编号来定位的，和文件名称没有关系。</p>
+<h3 id="create">create</h3>
+<ol>
+<li>将当前程序输出的日志文件重命名为压缩文件，但是inode编号不变。程序仅通过inode编号定位日志文件，所以此时到程序重新打开日志文件，所有生成的日志都输出到了重命名后的文件中。</li>
+<li>创建新的同名日志文件，虽然新的日志文件和原来日志文件的名字一样，但是inode编号不一样，所以程序输出的日志还是往原日志文件输出。</li>
+<li>通过某些方式通知程序，重新打开日志文件。程序重新打开日志文件，靠的是文件路径而不是inode编号，所以打开的是新的日志文件。</li>
+</ol>
+<h3 id="copytruncate">copytruncate</h3>
+<ol>
+<li>拷贝当前日志文件到压缩文件，这期间程序照常输出日志到原来的文件中，原来的文件名也没有变。</li>
+<li>清空程序正在输出的日志文件。清空后程序输出的日志还是输出到这个日志文件中，因为清空文件只是把文件的内容删除了，文件的inode编号并没有发生变化，变化的是元信息中文件内容的信息。</li>
+</ol>
+<p>此方案存在一个问题，就是在日志拷贝开始，到清空日志文件的这段时间内，程序输出的日志没有存储，存在日志丢失的风险。</p>
+<blockquote>
+<p><a href="https://www.lightxue.com/how-logrotate-works">logrotate机制和原理</a></p>
+</blockquote>
+<h2 id="_3">问题修复</h2>
+<h3 id="gunicorn">Gunicorn源码分析</h3>
+<p>在gunicorn(版本20.0.4)中可以查找到和USR1信号处理的相关代码如下：</p>
+<p><code>venv/Lib/site-packages/gunicorn/arbiter.py</code> 196行：</p>
+<pre><code class="language-python">def run(self):
+    &quot;Main master loop.&quot;
+    self.start()
+    util._setproctitle(&quot;master [%s]&quot; % self.proc_name)
+
+    try:
+        self.manage_workers()
+
+        while True:
+            self.maybe_promote_master()
+
+            sig = self.SIG_QUEUE.pop(0) if self.SIG_QUEUE else None
+            if sig is None:
+                self.sleep()
+                self.murder_workers()
+                self.manage_workers()
+                continue
+
+            if sig not in self.SIG_NAMES:
+                self.log.info(&quot;Ignoring unknown signal: %s&quot;, sig)
+                continue
+
+            signame = self.SIG_NAMES.get(sig)
+            handler = getattr(self, &quot;handle_%s&quot; % signame, None)
+            if not handler:
+                self.log.error(&quot;Unhandled signal: %s&quot;, signame)
+                continue
+            self.log.info(&quot;Handling signal: %s&quot;, signame)
+            handler()
+            self.wakeup()
+
+def handle_usr1(self):
+    &quot;&quot;&quot;
+    SIGUSR1 handling.
+    Kill all workers by sending them a SIGUSR1
+    &quot;&quot;&quot;
+    self.log.reopen_files()
+    self.kill_workers(signal.SIGUSR1)
+</code></pre>
+<h3 id="uvicorn">Uvicorn源码分析</h3>
+<p>Uvicorn只处理了程序终止相关的信号：</p>
+<pre><code class="language-python">HANDLED_SIGNALS = (
+    signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
+    signal.SIGTERM,  # Unix signal 15. Sent by `kill &lt;pid&gt;`.
+)
+</code></pre>
+<p><code>venv/Lib/site-packages/uvicorn/workers.py</code> 64行：</p>
+<pre><code class="language-python">    def init_process(self):
+        self.config.setup_event_loop()
+        super(UvicornWorker, self).init_process()
+
+    def init_signals(self):
+        pass
+
+    def run(self):
+        self.config.app = self.wsgi
+        server = Server(config=self.config)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(server.serve(sockets=self.sockets))
+</code></pre>
+<p>可以看到UvicornWorker的init_signals函数被重写为不执行任何操作了，其父类gunicorn.workers.base.Worker的init_signals方法为：</p>
+<pre><code class="language-python">    def init_signals(self):
+        # reset signaling
+        for s in self.SIGNALS:
+            signal.signal(s, signal.SIG_DFL)
+        # init new signaling
+        signal.signal(signal.SIGQUIT, self.handle_quit)
+        signal.signal(signal.SIGTERM, self.handle_exit)
+        signal.signal(signal.SIGINT, self.handle_quit)
+        signal.signal(signal.SIGWINCH, self.handle_winch)
+        signal.signal(signal.SIGUSR1, self.handle_usr1)
+        signal.signal(signal.SIGABRT, self.handle_abort)
+
+        # Don't let SIGTERM and SIGUSR1 disturb active requests
+        # by interrupting system calls
+        signal.siginterrupt(signal.SIGTERM, False)
+        signal.siginterrupt(signal.SIGUSR1, False)
+
+        if hasattr(signal, 'set_wakeup_fd'):
+            signal.set_wakeup_fd(self.PIPE[1])
+</code></pre>
+<h2 id="_4">解决方案</h2>
+<p>让UvicornWorker正常处理USR1信号即可，将<code>venv/Lib/site-packages/uvicorn/workers.py</code> 63行由：</p>
+<pre><code class="language-python">def init_signals(self):
+    pass
+</code></pre>
+<p>修改为</p>
+<pre><code class="language-python">import signal
+
+def init_signals(self):
+    signal.signal(signal.SIGUSR1, self.handle_usr1)
+</code></pre>
+<p>即可。</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.08c56446.min.js"></script>
+      <script src="../assets/javascripts/bundle.6ced434e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
