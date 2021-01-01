@@ -1,0 +1,10 @@
+site_name: Blog
+site_description: "Blog"
+
+docs_dir: blogs
+
+theme:
+  name: "material"
+
+nav:
+  - FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出: fastapi_uvicorn_logrotate.md
