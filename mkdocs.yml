@@ -2,6 +2,7 @@ site_name: Blog
 site_description: "Blog"
 
 docs_dir: blogs
+site_dir: docs
 
 theme:
   name: "material"
