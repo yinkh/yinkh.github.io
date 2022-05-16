@@ -1,0 +1,3184 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="YinKH个人博客">
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+    
+    
+      
+        <title>Apache部署Django - YinKH</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.c382b1dc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#2018-02-06-python36" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="YinKH" class="md-header__button md-logo" aria-label="YinKH" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            YinKH
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Apache部署Django
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        主页
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../python/python-note/" class="md-tabs__link md-tabs__link--active">
+        Python
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../java/android/todo-sync/" class="md-tabs__link">
+        Java
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../front/javascript/javascript-note/" class="md-tabs__link">
+        前端
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../cache/redis/zset/" class="md-tabs__link">
+        缓存
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../linux/wrk/" class="md-tabs__link">
+        Linux
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../other/FileZilla/" class="md-tabs__link">
+        其他
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="YinKH" class="md-nav__button md-logo" aria-label="YinKH" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    YinKH
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          主页
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="主页" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          主页
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        主页
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tags/" class="md-nav__link">
+        标签
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Python
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Python" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Python
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          Python
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Python" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          Python
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/python-note/" class="md-nav__link">
+        Python笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/python-venv/" class="md-nav__link">
+        Virtualenv
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/pycharm/" class="md-nav__link">
+        Pycharm调教
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/rw-excel/" class="md-nav__link">
+        python读写Excel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/pip-publish/" class="md-nav__link">
+        PyPi发布
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/pycharm-ssh/" class="md-nav__link">
+        Pycharm中利用ssh远程部署
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/pinyin/" class="md-nav__link">
+        汉字转拼音（简码生成）
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/sf-express/" class="md-nav__link">
+        顺丰丰桥对接笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/mkdocs/" class="md-nav__link">
+        MkDocs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          FastApi
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="FastApi" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          FastApi
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/tortoise-orm/" class="md-nav__link">
+        tortoise-orm教程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/request-id/" class="md-nav__link">
+        request-id实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/fastapi-uvicorn-logrotate/" class="md-nav__link">
+        FastApi+Uvicorn使用logrotate压缩access日志后新日志无法正常输出
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/Flask-Django-FastApi-SpringBoot-Go-performance/" class="md-nav__link">
+        Flask、Django、FastApi、SpringBoot、Go性能比较
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Django
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Django" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Django
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-note/" class="md-nav__link">
+        Django笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-summernote/" class="md-nav__link">
+        Django-summernote富文本
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-wysiwyg/" class="md-nav__link">
+        Django富文本编辑器(wysiwyg)对比
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-constance/" class="md-nav__link">
+        Django-constance实现动态设置
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-channels/" class="md-nav__link">
+        Django-Channels使用和部署
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-cors-headers/" class="md-nav__link">
+        Django使用django-cors-headers处理API跨域问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-oss/" class="md-nav__link">
+        在Django中使用OSS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-translation/" class="md-nav__link">
+        Django多语言支持
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-transaction/" class="md-nav__link">
+        Django事务
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sitemap-rss-robots/" class="md-nav__link">
+        Django搜索优化sitemap、RSS、robots
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-multiselectfield/" class="md-nav__link">
+        Django-multiselectfield实现固定值多选
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../order-id/" class="md-nav__link">
+        Django订单编号生成
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-popup/" class="md-nav__link">
+        Django弹窗新增、修改、删除ForeignKey、ManyToMany
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-haystack/" class="md-nav__link">
+        Django-haystack全局搜索
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-cleanup/" class="md-nav__link">
+        Django-cleanup 清理文件
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-orm/" class="md-nav__link">
+        Django-orm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-model/" class="md-nav__link">
+        Django重写model的增删查改方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-m2m/" class="md-nav__link">
+        Django save方法不立即更新ManyToManyField的问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-TinyMCE/" class="md-nav__link">
+        Django Admin中集成TinyMCE
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../html-email/" class="md-nav__link">
+        Django发送Html邮件
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-celery/" class="md-nav__link">
+        Django celery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-admin/" class="md-nav__link">
+        Django admin对比
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-permissions/" class="md-nav__link">
+        Django权限机制
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-extensions/" class="md-nav__link">
+        Django模型依赖可视化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../django-smtp/" class="md-nav__link">
+        阿里云邮箱 smtp/pop3 Android客户端,Django后台设置
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nginx-uwsgi/" class="md-nav__link">
+        Nginx+uWsgi部署Django
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Apache部署Django
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Apache部署Django
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2018-02-06-python36" class="md-nav__link">
+    2018-02-06 更新使用python3.6版本
+  </a>
+  
+    <nav class="md-nav" aria-label="2018-02-06 更新使用python3.6版本">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxapache" class="md-nav__link">
+    Linux部署Apache生产环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1ubuntupython36" class="md-nav__link">
+    1、ubuntu安装python3.6
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2apache2" class="md-nav__link">
+    2、安装apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3mod_wsgi" class="md-nav__link">
+    3、安装mod_wsgi模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4xsendfile" class="md-nav__link">
+    4、安装xsendfile模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5、创建虚拟环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6apache2" class="md-nav__link">
+    6、配置apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7mysql57" class="md-nav__link">
+    7、安装mysql5.7
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8mysqlwindowsubuntu" class="md-nav__link">
+    8、MySql由Windows迁移至Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9https" class="md-nav__link">
+    9、Https支持
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10pip" class="md-nav__link">
+    10、pip修改源
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11mysql" class="md-nav__link">
+    11、mysql自动备份
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    10、常见问题&amp;备注
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2017-08-30" class="md-nav__link">
+    2017-08-30 版本
+  </a>
+  
+    <nav class="md-nav" aria-label="2017-08-30 版本">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxapache_1" class="md-nav__link">
+    Linux部署Apache生产环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1ubuntupython35" class="md-nav__link">
+    1、ubuntu安装python3.5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2apache" class="md-nav__link">
+    2、安装apache等必要模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3apache2" class="md-nav__link">
+    3、配置apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4mysqlwindowsubuntu" class="md-nav__link">
+    4、MySql由Windows迁移至Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5apache" class="md-nav__link">
+    5、Apache模块配置
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    6、文件操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    7、配置项目
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8mysql57" class="md-nav__link">
+    8、安装mysql5.7
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9https_1" class="md-nav__link">
+    9、Https支持
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10pip_1" class="md-nav__link">
+    10、pip修改源
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11mysql_1" class="md-nav__link">
+    11、mysql自动备份
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12xfce4" class="md-nav__link">
+    12、阿里云上xfce4中文乱码
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fabric/" class="md-nav__link">
+        Fabric部署、维护
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          DjangoRestFramework
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="DjangoRestFramework" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          DjangoRestFramework
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drf/drf-note/" class="md-nav__link">
+        DjangoRestFramework笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drf/rest_framework_cache/" class="md-nav__link">
+        rest_framework_cache优化接口访问速度
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../drf/drf-writable-nested/" class="md-nav__link">
+        drf-writable-nested嵌套新增更新
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Java
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Java" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Java
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          Andorid
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Andorid" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Andorid
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/todo-sync/" class="md-nav__link">
+        Android离线数据同步策略
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/okhttp3/" class="md-nav__link">
+        Android OkHttp3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/pda-keyboard/" class="md-nav__link">
+        Android PDA键盘逻辑
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/viewpager/" class="md-nav__link">
+        Android ViewPager总结
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/language/" class="md-nav__link">
+        Android语言热切换方案
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-note/" class="md-nav__link">
+        Android笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-amap/" class="md-nav__link">
+        高德地图相关笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-toolbar/" class="md-nav__link">
+        Android状态栏透明
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-activity/" class="md-nav__link">
+        Android Activity间传递对象
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-mjpg/" class="md-nav__link">
+        Android MJPG底层C文件编译笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/android-md/" class="md-nav__link">
+        Material Design卡片阴影、Ripple Effect实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../java/android/andorid-dialog-edittext/" class="md-nav__link">
+        dialog自动弹出软键盘、光标移至Edittext末尾
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          前端
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="前端" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          前端
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_1">
+          JavaScript
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="JavaScript" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          JavaScript
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../front/javascript/javascript-note/" class="md-nav__link">
+        JavaScript笔记
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          缓存
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="缓存" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          缓存
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_1" type="checkbox" id="__nav_5_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_1">
+          Redis
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Redis" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          Redis
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cache/redis/zset/" class="md-nav__link">
+        Redis SortedSet(有序集合)使用笔记
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Linux
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/wrk/" class="md-nav__link">
+        wrk压测工具
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/CentOS-7-install-Python3.8.3/" class="md-nav__link">
+        CentOS-7安装Python3.8.3
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/ubuntu-install/" class="md-nav__link">
+        ubuntu安装配置记录
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/supervisor-celery/" class="md-nav__link">
+        Supervisor使用笔记及celery生产部署
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/vm/" class="md-nav__link">
+        虚拟机安装问题记录
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/git-note/" class="md-nav__link">
+        Git笔记
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linux/raspberrypi/" class="md-nav__link">
+        树莓派安装 python3 及 python IDE
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          其他
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="其他" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          其他
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../other/FileZilla/" class="md-nav__link">
+        FileZilla Server搭建
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../other/school-ms/" class="md-nav__link">
+        schoolms中逻辑问题记录
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2018-02-06-python36" class="md-nav__link">
+    2018-02-06 更新使用python3.6版本
+  </a>
+  
+    <nav class="md-nav" aria-label="2018-02-06 更新使用python3.6版本">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxapache" class="md-nav__link">
+    Linux部署Apache生产环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1ubuntupython36" class="md-nav__link">
+    1、ubuntu安装python3.6
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2apache2" class="md-nav__link">
+    2、安装apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3mod_wsgi" class="md-nav__link">
+    3、安装mod_wsgi模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4xsendfile" class="md-nav__link">
+    4、安装xsendfile模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5、创建虚拟环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6apache2" class="md-nav__link">
+    6、配置apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7mysql57" class="md-nav__link">
+    7、安装mysql5.7
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8mysqlwindowsubuntu" class="md-nav__link">
+    8、MySql由Windows迁移至Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9https" class="md-nav__link">
+    9、Https支持
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10pip" class="md-nav__link">
+    10、pip修改源
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11mysql" class="md-nav__link">
+    11、mysql自动备份
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    10、常见问题&amp;备注
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2017-08-30" class="md-nav__link">
+    2017-08-30 版本
+  </a>
+  
+    <nav class="md-nav" aria-label="2017-08-30 版本">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linuxapache_1" class="md-nav__link">
+    Linux部署Apache生产环境
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1ubuntupython35" class="md-nav__link">
+    1、ubuntu安装python3.5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2apache" class="md-nav__link">
+    2、安装apache等必要模块
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3apache2" class="md-nav__link">
+    3、配置apache2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4mysqlwindowsubuntu" class="md-nav__link">
+    4、MySql由Windows迁移至Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5apache" class="md-nav__link">
+    5、Apache模块配置
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    6、文件操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    7、配置项目
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8mysql57" class="md-nav__link">
+    8、安装mysql5.7
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9https_1" class="md-nav__link">
+    9、Https支持
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10pip_1" class="md-nav__link">
+    10、pip修改源
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11mysql_1" class="md-nav__link">
+    11、mysql自动备份
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12xfce4" class="md-nav__link">
+    12、阿里云上xfce4中文乱码
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+  
+
+
+
+  <h1>Apache部署Django</h1>
+
+<h2 id="2018-02-06-python36">2018-02-06 更新使用python3.6版本</h2>
+<h3 id="linuxapache">Linux部署Apache生产环境</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Ubuntu</span> <span class="mf">14.04</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">Apache</span> <span class="mf">2.4.7</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">Python</span> <span class="mf">3.6</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">Django</span> <span class="mf">2.0.2</span>
+</code></pre></div>
+<h3 id="1ubuntupython36">1、ubuntu安装python3.6</h3>
+<p>ubuntu14.04系统会自带python2.7和python3.4，请不要卸载python2.7，也不要将新安装的python3.6指向python/python3。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo apt-get install python-software-properties
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sudo apt-get install software-properties-common
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># sudo add-apt-repository ppa:deadsnakes/ppa</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>sudo add-apt-repository ppa:jonathonf/python-3.6
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>sudo apt-get update
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>sudo apt-get install python3.6 python3.6-dev python3.6-venv
+</code></pre></div>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/42662104/how-to-install-pip-for-python-3-6-on-ubuntu-16-10/44254088#44254088">How to install pip for Python 3.6 on Ubuntu 16.10?</a></p>
+</blockquote>
+<h3 id="2apache2">2、安装apache2</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo apt-get update
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sudo apt-get install apache2 apache2-dev
+</code></pre></div>
+<blockquote>
+<p><a href="https://code.google.com/archive/p/modwsgi/wikis/QuickInstallationGuide.wiki#Apache_Requirements">On Linux systems, if Apache has been installed from a package repository, you must have installed the corresponding Apache "dev" package as well.</a></p>
+</blockquote>
+<h3 id="3mod_wsgi">3、安装<code>mod_wsgi</code>模块</h3>
+<p><code>mod_wsgi</code>依赖于<code>python</code>的<code>c api</code>,故只可支持一个版本的<code>python</code>。这就要求<code>Django</code>项目使用的虚拟环境中的<code>python</code>版本和<code>mod_wsgi</code>编译使用的<code>python</code>版本完全相同，不然将无法使用。</p>
+<p>pip 安装<code>wsgi</code>的库时会自动向<code>/etc/apache2/mods-available/</code>中添加<code>wsgi.conf(空的注释文件)和wsgi.load</code>，手动安装需要手动新增<code>wsgi.load</code>文件。</p>
+<p><code>wsgi.load</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>mod_wsgi.so位于文件夹/usr/lib/apache2/modules/中
+</code></pre></div>
+<ul>
+<li>方法1：pip 安装</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo apt-get install libapache2-mod-wsgi-py3
+</code></pre></div>
+<p>该方法将直接使用系统的<code>python3</code>对应的<code>python</code>版本编译<code>mod_wsgi</code>,<code>ubuntu14.04</code>系统的默认<code>python3</code>为<code>python3.4</code>,而<code>python3.4</code>在<code>django2.02</code>后将无法使用。<code>ubuntu16.06</code>系统默认的<code>python3</code>为<code>python3.5</code>。</p>
+<p>同一系统有多个<code>python3</code>,系统默认取最低版本的python3以提供更好的兼容性。</p>
+<p>可以使用下述命令来修改默认<code>python</code>和<code>python3</code>的版本，但是强烈不推荐，修改默认<code>python\python3</code>版本可能会导致系统无法正常运行。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 设置python-&gt;python3.6 python3-&gt;python3.6</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo cp /usr/bin/python /usr/bin/python_bak
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>sudo rm /usr/bin/python<span class="s1">&#39;)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s1">sudo ln -s /usr/bin/python3.6 /usr/bin/python</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="s1">sudo cp /usr/bin/python3 /usr/bin/python3_bak</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s1">sudo rm /usr/bin/python3&#39;</span><span class="o">)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>sudo ln -s /usr/bin/python3.6 /usr/bin/python3
+</code></pre></div>
+<blockquote>
+<p>python生成的虚拟环境版本必须和编译使用的mod_wsgi版本相同:<a href="https://github.com/GrahamDumpleton/mod_wsgi/issues/239">链接1</a> <a href="http://modwsgi.readthedocs.io/en/develop/user-guides/virtual-environments.html#virtual-environment-and-python-version">链接2</a> <a href="https://github.com/GrahamDumpleton/mod_wsgi/issues/21">链接3</a> <a href="https://serverfault.com/questions/599859/multiple-python-versions-under-apachemod-wsgi">链接4</a> <a href="http://modwsgi.readthedocs.io/en/develop/user-guides/virtual-environments.html#virtual-environment-and-python-version">链接5</a></p>
+</blockquote>
+<ul>
+<li>方法2（推荐）：安装包安装</li>
+</ul>
+<p>前往<a href="https://github.com/GrahamDumpleton/mod_wsgi/releases">github</a>下载最新版本的<code>mod_wsgi</code>,上传至服务器，或使用</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>wget -O mod_wsgi-4.6.4.tar.gz https://codeload.github.com/GrahamDumpleton/mod_wsgi/tar.gz/4.6.4
+</code></pre></div>
+<p>下载，执行下列命令安装：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>tar xvfz mod_wsgi-X.Y.tar.gz <span class="c1"># 解压</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span> mod_wsgi-X.Y/ <span class="c1"># 进入解压目录</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>sudo ./configure --with-python<span class="o">=</span>/usr/bin/python3.6 <span class="c1"># 指定python版本编译mod_wsgi模块</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>sudo make <span class="c1"># 编译</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>sudo make install <span class="c1"># 安装</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>sudo nano /etc/apache2/mods-available/wsgi.load <span class="c1"># 新增wsgi.load</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so <span class="c1"># wsgi.load文件写入 加载mod_wsgi</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>sudo a2enmod wsgi <span class="c1"># 开启mod_wsgi</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>sudo service apache2 restart <span class="c1"># 重启apache2</span>
+</code></pre></div>
+<blockquote>
+<p><a href="https://code.google.com/archive/p/modwsgi/wikis/QuickInstallationGuide.wiki#Apache_Requirements">mod_wsgi 【Unpacking The Source Code部分】</a> <a href="https://askubuntu.com/questions/25374/how-do-you-install-mod-wsgi">Stack Overflow</a>中Valentin Kantor的回答</p>
+</blockquote>
+<h3 id="4xsendfile">4、安装xsendfile模块</h3>
+<p><code>xsendfile</code>主要用于文件上传下载，不需要该功能请直接跳过，该模块与编译<code>python</code>无关，可直接pip安装。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo apt-get install libapache2-mod-xsendfile
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>sudo a2enmod xsendfile
+</code></pre></div>
+<h3 id="5">5、创建虚拟环境</h3>
+<ul>
+<li>方法一（推荐）：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python3.6 -m venv environment <span class="c1"># 创建虚拟环境 python3.3后版本支持</span>
+</code></pre></div>
+<ul>
+<li>方法二：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sudo apt-get install python3-pip <span class="c1"># 此pip对应python3.4</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>sudo pip3 install virtualenv <span class="c1"># 此pip3对应python3.4</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>virtualenv environment --python<span class="o">=</span>python3.6 <span class="c1"># 指定创建的环境使用python3.6,不指定将使用默认的python3.4而导致无法兼容mod_wsgi编译版本。</span>
+</code></pre></div>
+<p>激活\关闭虚拟环境</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span> environment/bin/activate 激活虚拟环境
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>deactivate 关闭虚拟环境
+</code></pre></div>
+<h3 id="6apache2">6、配置apache2</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo chmod -R <span class="m">777</span> /etc/apache2 <span class="c1"># 为apache2目录开启读写权限,防止设置保存失败</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo chmod -R /django/demo <span class="c1"># 为项目开启读写权限,方便编辑</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sudo nano /etc/apache2/site-available/demo.conf <span class="c1"># 编辑配置文件</span>
+</code></pre></div>
+<p><code>demo.conf</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="na">&lt;VirtualHost *:8000&gt;</span><span class="w"></span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="na">ServerAdmin ykh@dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="na">ServerName 192.168.1.102</span><span class="w"></span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="na">DocumentRoot /django/demo</span><span class="w"></span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="na">Alias /static /django/demo/static</span><span class="w"></span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="na">&lt;Directory /django/demo/static&gt;</span><span class="w"></span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="na">Alias /static /django/demo/media</span><span class="w"></span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">    </span><span class="na">&lt;Directory /django/demo/media&gt;</span><span class="w"></span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /django/demo/demo/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">    </span><span class="na">&lt;Directory /django/demo/demo&gt;</span><span class="w"></span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">        </span><span class="na">&lt;Files wsgi.py&gt;</span><span class="w"></span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">            </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="w">        </span><span class="na">&lt;/Files&gt;</span><span class="w"></span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="w">    </span><span class="na">WSGIDaemonProcess 192.168.1.102 python-path</span><span class="o">=</span><span class="s">/django/demo python-home=/django/demo/environment</span><span class="w"></span>
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="w">    </span><span class="na">WSGIProcessGroup 192.168.1.102</span><span class="w"></span>
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<p>使用8000端口需要配置：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo ufw allow <span class="m">8000</span> 防火墙开放8000端口
+</code></pre></div>
+<p>编辑<code>/etc/apache2/ports.conf</code>文件,新增Listen 8000,保存并重启Apache2。</p>
+<p>使用命令开启站点：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo a2enmod wsgi
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>sudo a2ensite <span class="m">000</span>-default.conf
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sudo service apache2 reload
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>sudo service apache2 restart
+</code></pre></div>
+<p>站点关闭命令</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sudo a2dissite <span class="m">000</span>-default.conf
+</code></pre></div>
+<p>Apache默认的日志文件位于/var/log/apache2/error.log</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>配置虚拟主机：ErrorLog /django/dreamgo/error.log
+</code></pre></div>
+<p>Django中文语言错误：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>错误提示： no translation files found <span class="k">for</span> default language zh_Hans
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>解决方案： <span class="nv">在settings中将LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;zh_Hans&#39;</span><span class="nv">改为LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;zh-hans&#39;</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>可至，对应的语言代码可至django/conf/locale/__init__.py中查找。
+</code></pre></div>
+<h3 id="7mysql57">7、安装mysql5.7</h3>
+<p><code>ubuntu16.06</code>请直接安装，<code>apt-get install mysql-server</code>,版本为5.7.12。</p>
+<p><code>ubuntu14.04</code>: 由于不同版本的sql无法备份，故使用和windows上相同的mysql5.7,linux apt-get 安装的为5.5.54。</p>
+<p>步骤：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>wget http://dev.mysql.com/get/mysql-apt-config_0.6.0-1_all.deb
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>sudo dpkg -i mysql-apt-config_0.6.0-1_all.deb
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>sudo apt-get update
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>sudo apt-get install mysql-server
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>mysql --version
+</code></pre></div>
+<ul>
+<li>出现中文乱码错误</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>CREATE DATABASE &lt;dbname&gt; CHARACTER SET utf8<span class="p">;</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>请在创造数据库的时候指定数据库编码集为utf8；
+</code></pre></div>
+<ul>
+<li><code>pip mysqlclient</code>时提示 <code>mysql_config not found</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>sudo apt-get install libmysqlclient-dev
+</code></pre></div>
+<h3 id="8mysqlwindowsubuntu">8、MySql由Windows迁移至Ubuntu</h3>
+<p>Windows进入C:\Program Files\MySQL\MySQL Server 5.7\bin打开cmd:</p>
+<p>Windows:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>mysqldump -uroot -proot --all-databases &gt;C:<span class="se">\a</span>ll_data.sql 备份全部数据库
+</code></pre></div>
+<p>Linux:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>mysql -uroot -proot 进入mysql命令交互终端
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>    create database dreamgo<span class="p">;</span> 新建数据库
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>    drop database dreamgo； 删除数据库
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    show databases<span class="p">;</span> 列出所有数据库
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>    use database_name<span class="p">;</span> 使用某个数据库
+</code></pre></div>
+<p>通用：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>mysql --version 查看mysql版本
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>mysqldump -uroot -p dreamgo &gt;C:<span class="se">\d</span>reamgo.sql 备份一个数据库 需要迁移的两个数据库版本相同
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>mysqldump -uroot -p database_name &lt;C:<span class="se">\d</span>reamgo.sql 恢复数据提示成功但是无表被添加
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>mysql -uroot -p database_name &lt;C:<span class="se">\d</span>reamgo.sql 恢复数据成功
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>mysql_upgrade -uroot -proot --force 提示系统的session表不存在时执行
+</code></pre></div>
+<h3 id="9https">9、Https支持</h3>
+<ol>
+<li>
+<p>前往阿里云注册并下载免费CA证书，请注意绑定域名时免费的CA证书仅可绑定单个普通域名，不可绑定通用域名，既若使用的域名是二级域名的话，需要直接绑定到二级域名而不是父级域名。</p>
+</li>
+<li>
+<p>在<code>/etc/apache2/</code>文件夹根目录下创建一个cert文件夹，再在cert文件夹下创建一个<code>blog_dreamgotech_com</code>文件夹，拷贝阿里云下载的证书压缩包中的四个文件到在<code>/etc/apache2/cert/blog_dreamgotech_com/</code>文件夹下。</p>
+</li>
+<li>
+<p>开启<code>ssl</code>以及<code>rewrite</code>模块</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sudo a2enmod rewrite
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>sudo a2enmod ssl
+</code></pre></div>
+<ol>
+<li>确认<code>ports.conf</code>如下：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="na">Listen 80</span><span class="w"></span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="na">&lt;IfModule ssl_module&gt;</span><span class="w"></span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span><span class="na">Listen 443</span><span class="w"></span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="na">&lt;/IfModule&gt;</span><span class="w"></span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="na">&lt;IfModule mod_gnutls.c&gt;</span><span class="w"></span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">    </span><span class="na">Listen 443</span><span class="w"></span>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="na">&lt;/IfModule&gt;</span><span class="w"></span>
+</code></pre></div>
+<ol>
+<li>配置<code>blog.conf</code>文件为</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="na">&lt;VirtualHost *:80&gt;</span><span class="w"></span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">    </span><span class="c1"># Http重定向至Https站点</span><span class="w"></span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="na">ServerName blog.dreamgotech.com</span><span class="w"></span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="na">RewriteEngine On</span><span class="w"></span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="na">RewriteCond %{HTTP_HOST} ^blog\.dreamgotech\.com</span><span class="w"></span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="na">RewriteCond %{HTTPS} off</span><span class="w"></span>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="na">RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI}</span><span class="w"></span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="na">&lt;VirtualHost *:443&gt;</span><span class="w"></span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="na">ServerName blog.dreamgotech.com</span><span class="w"></span>
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">    </span><span class="na">ServerAdmin ykh@dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a>
+<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="na">DocumentRoot /django/Blog/</span><span class="w"></span>
+<a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>
+<a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="w">    </span><span class="na">SSLEngine on</span><span class="w"></span>
+<a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="w">    </span><span class="c1"># 添加 SSL 协议支持协议，去掉不安全的协议</span><span class="w"></span>
+<a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="w">    </span><span class="na">SSLProtocol all -SSLv2 -SSLv3</span><span class="w"></span>
+<a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="w">    </span><span class="c1"># 修改加密套件如下</span><span class="w"></span>
+<a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="w">    </span><span class="na">SSLCipherSuite HIGH:!RC4:!MD5:!aNULL:!eNULL:!NULL:!DH:!EDH:!EXP:+MEDIUM</span><span class="w"></span>
+<a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="w">    </span><span class="na">SSLHonorCipherOrder on</span><span class="w"></span>
+<a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="w">    </span><span class="c1"># 证书公钥配置</span><span class="w"></span>
+<a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="w">    </span><span class="na">SSLCertificateFile cert/blog_dreamgotech_com/public.pem</span><span class="w"></span>
+<a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="w">    </span><span class="c1"># 证书私钥配置</span><span class="w"></span>
+<a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="w">    </span><span class="na">SSLCertificateKeyFile cert/blog_dreamgotech_com/xxxx.key</span><span class="w"></span>
+<a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a><span class="w">    </span><span class="c1"># 证书链配置，如果该属性开头有 &#39;#&#39;字符，请删除掉</span><span class="w"></span>
+<a id="__codelineno-27-28" name="__codelineno-27-28" href="#__codelineno-27-28"></a><span class="w">    </span><span class="na">SSLCertificateChainFile cert/blog_dreamgotech_com/chain.pem</span><span class="w"></span>
+<a id="__codelineno-27-29" name="__codelineno-27-29" href="#__codelineno-27-29"></a>
+<a id="__codelineno-27-30" name="__codelineno-27-30" href="#__codelineno-27-30"></a><span class="w">    </span><span class="na">Alias /static /django/Blog/static/</span><span class="w"></span>
+<a id="__codelineno-27-31" name="__codelineno-27-31" href="#__codelineno-27-31"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/static/&gt;</span><span class="w"></span>
+<a id="__codelineno-27-32" name="__codelineno-27-32" href="#__codelineno-27-32"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-27-33" name="__codelineno-27-33" href="#__codelineno-27-33"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-27-34" name="__codelineno-27-34" href="#__codelineno-27-34"></a>
+<a id="__codelineno-27-35" name="__codelineno-27-35" href="#__codelineno-27-35"></a><span class="w">    </span><span class="na">Alias /media /django/Blog/media/</span><span class="w"></span>
+<a id="__codelineno-27-36" name="__codelineno-27-36" href="#__codelineno-27-36"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/media/&gt;</span><span class="w"></span>
+<a id="__codelineno-27-37" name="__codelineno-27-37" href="#__codelineno-27-37"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-27-38" name="__codelineno-27-38" href="#__codelineno-27-38"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-27-39" name="__codelineno-27-39" href="#__codelineno-27-39"></a>
+<a id="__codelineno-27-40" name="__codelineno-27-40" href="#__codelineno-27-40"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /django/Blog/Blog/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-27-41" name="__codelineno-27-41" href="#__codelineno-27-41"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/Blog&gt;</span><span class="w"></span>
+<a id="__codelineno-27-42" name="__codelineno-27-42" href="#__codelineno-27-42"></a><span class="w">         </span><span class="na">&lt;Files wsgi.py&gt;</span><span class="w"></span>
+<a id="__codelineno-27-43" name="__codelineno-27-43" href="#__codelineno-27-43"></a><span class="w">             </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-27-44" name="__codelineno-27-44" href="#__codelineno-27-44"></a><span class="w">         </span><span class="na">&lt;/Files&gt;</span><span class="w"></span>
+<a id="__codelineno-27-45" name="__codelineno-27-45" href="#__codelineno-27-45"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-27-46" name="__codelineno-27-46" href="#__codelineno-27-46"></a>
+<a id="__codelineno-27-47" name="__codelineno-27-47" href="#__codelineno-27-47"></a><span class="w">    </span><span class="na">WSGIPassAuthorization On</span><span class="w"></span>
+<a id="__codelineno-27-48" name="__codelineno-27-48" href="#__codelineno-27-48"></a><span class="w">    </span><span class="na">WSGIDaemonProcess blog.dreamgo.tech python-path</span><span class="o">=</span><span class="s">/django/Blog python-home=/django/Blog/environment</span><span class="w"></span>
+<a id="__codelineno-27-49" name="__codelineno-27-49" href="#__codelineno-27-49"></a><span class="w">    </span><span class="na">WSGIProcessGroup blog.dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-27-50" name="__codelineno-27-50" href="#__codelineno-27-50"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /django/Blog/Blog/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-27-51" name="__codelineno-27-51" href="#__codelineno-27-51"></a>
+<a id="__codelineno-27-52" name="__codelineno-27-52" href="#__codelineno-27-52"></a><span class="w">    </span><span class="na">ErrorLog /django/Blog/log/error.log</span><span class="w"></span>
+<a id="__codelineno-27-53" name="__codelineno-27-53" href="#__codelineno-27-53"></a><span class="w">    </span><span class="na">CustomLog /django/Blog/log/access.log combined</span><span class="w"></span>
+<a id="__codelineno-27-54" name="__codelineno-27-54" href="#__codelineno-27-54"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<ol>
+<li>重启Apache</li>
+</ol>
+<h3 id="10pip">10、pip修改源</h3>
+<p>window上修改user/Administrator/AppData/Local/pip/pip.ini为</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="na">[global]  </span><span class="w"></span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="na">index-url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">http://pypi.douban.com/simple/ </span><span class="w"></span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="na">[install] </span><span class="w"></span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="na">trusted-host</span><span class="o">=</span><span class="s">pypi.douban.com </span><span class="w"></span>
+</code></pre></div>
+<p>阿里云的linux云服务器自动会修改源为阿里云，配置本地linux主机pip配置文件：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>sudo mkdir ~/.pip
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nb">cd</span> ~/.pip
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>sudo touch pip.conf
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>sudo nano pip.conf
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>内容修改如上
+</code></pre></div>
+<h3 id="11mysql">11、mysql自动备份</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>sudo apt-get install automysqlbackup
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>安装时若提示选择mail时使用左右键选中OK继续即可
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>automysqlbackup的默认配置文件位于/etc/default/automysqlbackup文件
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>sudo nano /etc/default/automysqlbackup
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>新建备份目录<span class="s2">&quot;/django/mysql_backup&quot;</span>并赋予777权限
+</code></pre></div>
+<p>automysqlbackup,需要配置账户、密码、备份目录、备份频率、待备份数据库名称列表:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># By default, the Debian version of automysqlbackup will use:</span><span class="w"></span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="c1"># mysqldump --defaults-file=/etc/mysql/debian.cnf</span><span class="w"></span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="c1"># but you might want to overwrite with a specific user &amp; pass.</span><span class="w"></span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># To do this, simply edit bellow.</span><span class="w"></span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="c1"># Username to access the MySQL server e.g. dbuser</span><span class="w"></span>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="na">USERNAME</span><span class="o">=</span><span class="s">&quot;root&quot;</span><span class="w"></span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="c1"># Username to access the MySQL server e.g. password</span><span class="w"></span>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="na">PASSWORD</span><span class="o">=</span><span class="s">&quot;root&quot;</span><span class="w"></span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="c1"># Host name (or IP address) of MySQL server e.g localhost</span><span class="w"></span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="na">DBHOST</span><span class="o">=</span><span class="s">localhost</span><span class="w"></span>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="c1"># List of DBNAMES for Daily/Weekly Backup e.g. &quot;DB1 DB2 DB3&quot;</span><span class="w"></span>
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="c1"># Note that it&#39;s absolutely normal that the db named &quot;mysql&quot; is not in this</span><span class="w"></span>
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="c1"># list, as it&#39;s added later by the script. See the MDBNAMES directives below</span><span class="w"></span>
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a><span class="c1"># in this file (advanced options).</span><span class="w"></span>
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a><span class="c1"># This is ONLY a convenient default, if you don&#39;t like it, don&#39;t complain</span><span class="w"></span>
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a><span class="c1"># and write your own.</span><span class="w"></span>
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a><span class="c1"># The following is a quick hack that will find the names of the databases by</span><span class="w"></span>
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="c1"># reading the mysql folder content. Feel free to replace by something else.</span><span class="w"></span>
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="na">DBNAMES</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="w"></span>
+<a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a>
+<a id="__codelineno-31-25" name="__codelineno-31-25" href="#__codelineno-31-25"></a><span class="c1"># Backup directory location e.g /backups</span><span class="w"></span>
+<a id="__codelineno-31-26" name="__codelineno-31-26" href="#__codelineno-31-26"></a><span class="c1"># Folders inside this one will be created (daily, weekly, etc.), and the</span><span class="w"></span>
+<a id="__codelineno-31-27" name="__codelineno-31-27" href="#__codelineno-31-27"></a><span class="c1"># subfolders will be database names. Note that backups will be owned by</span><span class="w"></span>
+<a id="__codelineno-31-28" name="__codelineno-31-28" href="#__codelineno-31-28"></a><span class="c1"># root, with Unix rights 0600.</span><span class="w"></span>
+<a id="__codelineno-31-29" name="__codelineno-31-29" href="#__codelineno-31-29"></a><span class="na">BACKUPDIR</span><span class="o">=</span><span class="s">&quot;/django/mysql_backup&quot;</span><span class="w"></span>
+<a id="__codelineno-31-30" name="__codelineno-31-30" href="#__codelineno-31-30"></a>
+<a id="__codelineno-31-31" name="__codelineno-31-31" href="#__codelineno-31-31"></a><span class="c1"># Mail setup</span><span class="w"></span>
+<a id="__codelineno-31-32" name="__codelineno-31-32" href="#__codelineno-31-32"></a><span class="c1"># What would you like to be mailed to you?</span><span class="w"></span>
+<a id="__codelineno-31-33" name="__codelineno-31-33" href="#__codelineno-31-33"></a><span class="c1"># - log   : send only log file</span><span class="w"></span>
+<a id="__codelineno-31-34" name="__codelineno-31-34" href="#__codelineno-31-34"></a><span class="c1"># - files : send log file and sql files as attachments (see docs)</span><span class="w"></span>
+<a id="__codelineno-31-35" name="__codelineno-31-35" href="#__codelineno-31-35"></a><span class="c1"># - stdout : will simply output the log to the screen if run manually.</span><span class="w"></span>
+<a id="__codelineno-31-36" name="__codelineno-31-36" href="#__codelineno-31-36"></a><span class="c1"># - quiet : Only send logs if an error occurs to the MAILADDR.</span><span class="w"></span>
+<a id="__codelineno-31-37" name="__codelineno-31-37" href="#__codelineno-31-37"></a><span class="na">MAILCONTENT</span><span class="o">=</span><span class="s">&quot;files&quot;</span><span class="w"></span>
+<a id="__codelineno-31-38" name="__codelineno-31-38" href="#__codelineno-31-38"></a>
+<a id="__codelineno-31-39" name="__codelineno-31-39" href="#__codelineno-31-39"></a><span class="c1"># Set the maximum allowed email size in k. (4000 = approx 5MB email [see</span><span class="w"></span>
+<a id="__codelineno-31-40" name="__codelineno-31-40" href="#__codelineno-31-40"></a><span class="c1"># docs])</span><span class="w"></span>
+<a id="__codelineno-31-41" name="__codelineno-31-41" href="#__codelineno-31-41"></a><span class="na">MAXATTSIZE</span><span class="o">=</span><span class="s">&quot;4000&quot;</span><span class="w"></span>
+<a id="__codelineno-31-42" name="__codelineno-31-42" href="#__codelineno-31-42"></a>
+<a id="__codelineno-31-43" name="__codelineno-31-43" href="#__codelineno-31-43"></a><span class="c1"># Email Address to send mail to? (user@domain.com)</span><span class="w"></span>
+<a id="__codelineno-31-44" name="__codelineno-31-44" href="#__codelineno-31-44"></a><span class="na">MAILADDR</span><span class="o">=</span><span class="s">&quot;ykh@dreamgo.tech&quot;</span><span class="w"></span>
+<a id="__codelineno-31-45" name="__codelineno-31-45" href="#__codelineno-31-45"></a>
+<a id="__codelineno-31-46" name="__codelineno-31-46" href="#__codelineno-31-46"></a><span class="c1"># ============================================================</span><span class="w"></span>
+<a id="__codelineno-31-47" name="__codelineno-31-47" href="#__codelineno-31-47"></a><span class="c1"># === ADVANCED OPTIONS ( Read the doc&#39;s below for details )===</span><span class="w"></span>
+<a id="__codelineno-31-48" name="__codelineno-31-48" href="#__codelineno-31-48"></a><span class="c1">#=============================================================</span><span class="w"></span>
+<a id="__codelineno-31-49" name="__codelineno-31-49" href="#__codelineno-31-49"></a>
+<a id="__codelineno-31-50" name="__codelineno-31-50" href="#__codelineno-31-50"></a><span class="c1"># List of DBBNAMES for Monthly Backups.</span><span class="w"></span>
+<a id="__codelineno-31-51" name="__codelineno-31-51" href="#__codelineno-31-51"></a><span class="na">MDBNAMES</span><span class="o">=</span><span class="s">&quot;mysql $DBNAMES&quot;</span><span class="w"></span>
+<a id="__codelineno-31-52" name="__codelineno-31-52" href="#__codelineno-31-52"></a>
+<a id="__codelineno-31-53" name="__codelineno-31-53" href="#__codelineno-31-53"></a><span class="c1"># List of DBNAMES to EXLUCDE if DBNAMES are set to all (must be in &quot; quotes)</span><span class="w"></span>
+<a id="__codelineno-31-54" name="__codelineno-31-54" href="#__codelineno-31-54"></a><span class="na">DBEXCLUDE</span><span class="o">=</span><span class="s">&quot;information_schema performance_schema sys mysql&quot;</span><span class="w"></span>
+<a id="__codelineno-31-55" name="__codelineno-31-55" href="#__codelineno-31-55"></a>
+<a id="__codelineno-31-56" name="__codelineno-31-56" href="#__codelineno-31-56"></a><span class="c1"># Include CREATE DATABASE in backup?</span><span class="w"></span>
+<a id="__codelineno-31-57" name="__codelineno-31-57" href="#__codelineno-31-57"></a><span class="na">CREATE_DATABASE</span><span class="o">=</span><span class="s">yes</span><span class="w"></span>
+<a id="__codelineno-31-58" name="__codelineno-31-58" href="#__codelineno-31-58"></a>
+<a id="__codelineno-31-59" name="__codelineno-31-59" href="#__codelineno-31-59"></a><span class="c1"># Separate backup directory and file for each DB? (yes or no)</span><span class="w"></span>
+<a id="__codelineno-31-60" name="__codelineno-31-60" href="#__codelineno-31-60"></a><span class="na">SEPDIR</span><span class="o">=</span><span class="s">yes</span><span class="w"></span>
+<a id="__codelineno-31-61" name="__codelineno-31-61" href="#__codelineno-31-61"></a>
+<a id="__codelineno-31-62" name="__codelineno-31-62" href="#__codelineno-31-62"></a><span class="c1"># Which day do you want weekly backups? (1 to 7 where 1 is Monday)</span><span class="w"></span>
+<a id="__codelineno-31-63" name="__codelineno-31-63" href="#__codelineno-31-63"></a><span class="na">DOWEEKLY</span><span class="o">=</span><span class="s">6</span><span class="w"></span>
+<a id="__codelineno-31-64" name="__codelineno-31-64" href="#__codelineno-31-64"></a>
+<a id="__codelineno-31-65" name="__codelineno-31-65" href="#__codelineno-31-65"></a><span class="c1"># Choose Compression type. (gzip or bzip2)</span><span class="w"></span>
+<a id="__codelineno-31-66" name="__codelineno-31-66" href="#__codelineno-31-66"></a><span class="na">COMP</span><span class="o">=</span><span class="s">gzip</span><span class="w"></span>
+<a id="__codelineno-31-67" name="__codelineno-31-67" href="#__codelineno-31-67"></a>
+<a id="__codelineno-31-68" name="__codelineno-31-68" href="#__codelineno-31-68"></a><span class="c1"># Compress communications between backup server and MySQL server?</span><span class="w"></span>
+<a id="__codelineno-31-69" name="__codelineno-31-69" href="#__codelineno-31-69"></a><span class="na">COMMCOMP</span><span class="o">=</span><span class="s">no</span><span class="w"></span>
+<a id="__codelineno-31-70" name="__codelineno-31-70" href="#__codelineno-31-70"></a>
+<a id="__codelineno-31-71" name="__codelineno-31-71" href="#__codelineno-31-71"></a><span class="c1"># Additionally keep a copy of the most recent backup in a seperate</span><span class="w"></span>
+<a id="__codelineno-31-72" name="__codelineno-31-72" href="#__codelineno-31-72"></a><span class="c1"># directory.</span><span class="w"></span>
+<a id="__codelineno-31-73" name="__codelineno-31-73" href="#__codelineno-31-73"></a><span class="na">LATEST</span><span class="o">=</span><span class="s">no</span><span class="w"></span>
+<a id="__codelineno-31-74" name="__codelineno-31-74" href="#__codelineno-31-74"></a>
+<a id="__codelineno-31-75" name="__codelineno-31-75" href="#__codelineno-31-75"></a><span class="c1">#  The maximum size of the buffer for client/server communication. e.g. 16MB</span><span class="w"></span>
+<a id="__codelineno-31-76" name="__codelineno-31-76" href="#__codelineno-31-76"></a><span class="c1">#  (maximum is 1GB)</span><span class="w"></span>
+<a id="__codelineno-31-77" name="__codelineno-31-77" href="#__codelineno-31-77"></a><span class="na">MAX_ALLOWED_PACKET</span><span class="o">=</span><span class="w"></span>
+<a id="__codelineno-31-78" name="__codelineno-31-78" href="#__codelineno-31-78"></a>
+<a id="__codelineno-31-79" name="__codelineno-31-79" href="#__codelineno-31-79"></a><span class="c1">#  For connections to localhost. Sometimes the Unix socket file must be</span><span class="w"></span>
+<a id="__codelineno-31-80" name="__codelineno-31-80" href="#__codelineno-31-80"></a><span class="c1">#  specified.</span><span class="w"></span>
+<a id="__codelineno-31-81" name="__codelineno-31-81" href="#__codelineno-31-81"></a><span class="na">SOCKET</span><span class="o">=</span><span class="w"></span>
+<a id="__codelineno-31-82" name="__codelineno-31-82" href="#__codelineno-31-82"></a>
+<a id="__codelineno-31-83" name="__codelineno-31-83" href="#__codelineno-31-83"></a><span class="c1"># Command to run before backups (uncomment to use)</span><span class="w"></span>
+<a id="__codelineno-31-84" name="__codelineno-31-84" href="#__codelineno-31-84"></a><span class="c1">#PREBACKUP=&quot;/etc/mysql-backup-pre&quot;</span><span class="w"></span>
+<a id="__codelineno-31-85" name="__codelineno-31-85" href="#__codelineno-31-85"></a>
+<a id="__codelineno-31-86" name="__codelineno-31-86" href="#__codelineno-31-86"></a><span class="c1"># Command run after backups (uncomment to use)</span><span class="w"></span>
+<a id="__codelineno-31-87" name="__codelineno-31-87" href="#__codelineno-31-87"></a><span class="c1">#POSTBACKUP=&quot;/etc/mysql-backup-post&quot;</span><span class="w"></span>
+<a id="__codelineno-31-88" name="__codelineno-31-88" href="#__codelineno-31-88"></a>
+<a id="__codelineno-31-89" name="__codelineno-31-89" href="#__codelineno-31-89"></a><span class="c1"># Backup of stored procedures and routines (comment to remove)</span><span class="w"></span>
+<a id="__codelineno-31-90" name="__codelineno-31-90" href="#__codelineno-31-90"></a><span class="na">ROUTINES</span><span class="o">=</span><span class="s">yes</span><span class="w"></span>
+</code></pre></div>
+<p>执行命令</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>sudo automysqlbackup /etc/default/automysqlbackup 
+</code></pre></div>
+<p>运行配置即可在对应的备份目录看到备份的数据库文件</p>
+<h3 id="10">10、常见问题&amp;备注</h3>
+<ul>
+<li>ubuntu文件操作</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>sudo touch xxx.etx 新建文件
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>sudo mkdir xxx 新建目录
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>sudo mv dir1 dir2 剪切文件夹
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>sudo rm -rf dir 删除文件夹
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>sudo cp file dir 拷贝文件至某个文件夹
+</code></pre></div>
+<ul>
+<li>Pillow安装错误</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>sudo apt-get install python3-dev
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>sudo apt-get install libjpeg8-dev
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>pip install pillow
+</code></pre></div>
+<ul>
+<li>服务器500错误</li>
+</ul>
+<p>如果有log文件，必须对log文件所在的父级目录授权。</p>
+<ul>
+<li>Nginx VS Apache2</li>
+</ul>
+<p>Apache适用于计算密集型的动态请求(后端)，Nginx适合IO密集型的静态文件分发和反向代理(前端)。</p>
+<ul>
+<li>域名重定向</li>
+</ul>
+<p>最近为博客更换了新域名，不希望之前看博客的人找不到新域名，又不想部署两个站点导致内容割裂。于是利用Apache的域名重定向功能，将旧的域名请求直接重定向至新域名下。如访问旧域名<code>blog.dreamgotech.com/article/26/</code>将被重定向到新域名<code>www.yinkh.top/article/26/</code>。具体实现：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="na">&lt;VirtualHost *:80&gt;</span><span class="w"></span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="w">    </span><span class="na">ServerName xy.example.com</span><span class="w"></span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">    </span><span class="na">RedirectPermanent / http://abc.example.com/</span><span class="w"></span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<p>对于我的博客来说，由于有<code>http</code>和<code>https</code>之间的重定向，于是设置如下：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="na">&lt;VirtualHost *:80&gt;</span><span class="w"></span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w">    </span><span class="na">ServerName blog.dreamgotech.com</span><span class="w"></span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
+<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="w">    </span><span class="na">RedirectPermanent / http://www.yinkh.top/</span><span class="w"></span>
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="na">&lt;VirtualHost *:443&gt;</span><span class="w"></span>
+<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="w">    </span><span class="na">ServerName blog.dreamgotech.com</span><span class="w"></span>
+<a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a><span class="w">    </span><span class="na">ServerAdmin ykh@dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a>
+<a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="w">    </span><span class="na">RedirectPermanent / https://www.yinkh.top/</span><span class="w"></span>
+<a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a>
+<a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a><span class="w">    </span><span class="na">SSLEngine on</span><span class="w"></span>
+<a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a><span class="w">    </span><span class="na">SSLProtocol all -SSLv2 -SSLv3</span><span class="w"></span>
+<a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a><span class="w">    </span><span class="na">SSLCipherSuite HIGH:!RC4:!MD5:!aNULL:!eNULL:!NULL:!DH:!EDH:!EXP:+MEDIUM</span><span class="w"></span>
+<a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="w">    </span><span class="na">SSLHonorCipherOrder on</span><span class="w"></span>
+<a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a><span class="w">    </span><span class="na">SSLCertificateFile cert/blog_dreamgotech_com/public.pem</span><span class="w"></span>
+<a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a><span class="w">    </span><span class="na">SSLCertificateKeyFile cert/blog_dreamgotech_com/214278817430753.key</span><span class="w"></span>
+<a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a><span class="w">    </span><span class="na">SSLCertificateChainFile cert/blog_dreamgotech_com/chain.pem</span><span class="w"></span>
+<a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<hr />
+<h2 id="2017-08-30">2017-08-30 版本</h2>
+<h3 id="linuxapache_1">Linux部署Apache生产环境</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>Ubuntu <span class="m">14</span>.04
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>Apache <span class="m">2</span>.4.7
+<a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>Python <span class="m">3</span>.4
+<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>Django <span class="m">1</span>.10.6
+</code></pre></div>
+<h3 id="1ubuntupython35">1、ubuntu安装python3.5</h3>
+<p>ubuntu14.04系统会自带python2.7，请不要卸载它。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>sudo apt-get install python-software-properties
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>sudo apt-get install software-properties-common
+<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>
+<a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>sudo add-apt-repository ppa:fkrull/deadsnakes
+<a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>sudo apt-get update
+<a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a>sudo apt-get install python3.5
+<a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a>
+<a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a>sudo cp /usr/bin/python /usr/bin/python_bak 先备份
+<a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>sudo rm /usr/bin/python 删除
+<a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a>sudo ln -s /usr/bin/python3.5 /usr/bin/python 默认设置成python3.5
+</code></pre></div>
+<h3 id="2apache">2、安装apache等必要模块</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>sudo apt-get update
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>sudo apt-get install python3-pip apache2 libapache2-mod-wsgi-py3
+<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
+<a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>在python3环境下使用pip3安装软件而不是pip<span class="o">(</span>python2使用<span class="o">)</span>
+<a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a>
+<a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a>sudo pip3 install virtualenv
+<a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a>
+<a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a>virtualenv dreamgo_env 新建虚拟环境
+<a id="__codelineno-39-9" name="__codelineno-39-9" href="#__codelineno-39-9"></a><span class="nb">source</span> dreamgo/bin/activate 激活虚拟环境
+<a id="__codelineno-39-10" name="__codelineno-39-10" href="#__codelineno-39-10"></a>deactivate 关闭虚拟环境
+<a id="__codelineno-39-11" name="__codelineno-39-11" href="#__codelineno-39-11"></a>
+<a id="__codelineno-39-12" name="__codelineno-39-12" href="#__codelineno-39-12"></a>sudo apt-get install gedit
+</code></pre></div>
+<h3 id="3apache2">3、配置apache2</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>sudo chmod -R <span class="m">777</span> /etc/apache2 为apache2目录开启读写权限,防止设置保存失败
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>sudo chmod -R /home/dreamgo/dreamgo_official_site 为项目开启读写权限,方便编辑
+<a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>
+<a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>直接进入/etc/apache2/site-available/文件夹编辑000-default.conf或者使用命令：
+<a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>sudo gedit /etc/apache2/site-available/000-default.conf编辑配置文件
+</code></pre></div>
+<p>000-default.conf:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="na">&lt;VirtualHost *:8000&gt;</span><span class="w"></span>
+<a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="w">    </span><span class="na">ServerAdmin ykh@dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="w">    </span><span class="na">ServerName 192.168.1.102</span><span class="w"></span>
+<a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>
+<a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="w">    </span><span class="na">DocumentRoot /home/dreamgo/dreamgo_official_site</span><span class="w"></span>
+<a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a>
+<a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="w">    </span><span class="na">Alias /static /home/dreamgo/dreamgo_official_site/static</span><span class="w"></span>
+<a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">    </span><span class="na">&lt;Directory /home/dreamgo/dreamgo_official_site/static&gt;</span><span class="w"></span>
+<a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a>
+<a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a><span class="w">    </span><span class="na">&lt;Directory /home/dreamgo/dreamgo_official_site/dreamgo_official_site&gt;</span><span class="w"></span>
+<a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a><span class="w">        </span><span class="na">&lt;Files wsgi.py&gt;</span><span class="w"></span>
+<a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a><span class="w">            </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a><span class="w">        </span><span class="na">&lt;/Files&gt;</span><span class="w"></span>
+<a id="__codelineno-41-16" name="__codelineno-41-16" href="#__codelineno-41-16"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-41-17" name="__codelineno-41-17" href="#__codelineno-41-17"></a>
+<a id="__codelineno-41-18" name="__codelineno-41-18" href="#__codelineno-41-18"></a><span class="w">    </span><span class="na">WSGIDaemonProcess 192.168.1.102 python-path</span><span class="o">=</span><span class="s">/home/dreamgo/dreamgo_official_site python-home=/home/dreamgo/dreamgo_official_site/dreamgo_env</span><span class="w"></span>
+<a id="__codelineno-41-19" name="__codelineno-41-19" href="#__codelineno-41-19"></a><span class="w">    </span><span class="na">WSGIProcessGroup 192.168.1.102</span><span class="w"></span>
+<a id="__codelineno-41-20" name="__codelineno-41-20" href="#__codelineno-41-20"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /home/dreamgo/dreamgo_official_site/dreamgo_official_site/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-41-21" name="__codelineno-41-21" href="#__codelineno-41-21"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<p>使用8000端口需要配置：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>sudo ufw allow <span class="m">8000</span> 防火墙开放8000端口
+<a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>编辑/etc/apache2/ports.conf文件,新增Listen <span class="m">8000</span>,保存。
+</code></pre></div>
+<p>使用命令开启站点：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>sudo a2enmod wsgi
+<a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>sudo a2ensite <span class="m">000</span>-default.conf
+<a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>sudo service apache2 reload
+<a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a>sudo service apache2 restart
+</code></pre></div>
+<p>站点关闭命令</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>sudo a2dissite <span class="m">000</span>-default.conf
+</code></pre></div>
+<p>Django中文语言错误：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>错误提示： no translation files found <span class="k">for</span> default language zh_Hans
+<a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>解决方案： <span class="nv">在settings中将LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;zh_Hans&#39;</span><span class="nv">改为LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;zh-hans&#39;</span>
+<a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>可至，对应的语言代码可至django/conf/locale/__init__.py中查找。
+</code></pre></div>
+<h3 id="4mysqlwindowsubuntu">4、MySql由Windows迁移至Ubuntu</h3>
+<p>Windows进入C:\Program Files\MySQL\MySQL Server 5.7\bin打开cmd:</p>
+<p>Windows:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>mysqldump -uroot -proot --all-databases &gt;C:<span class="se">\a</span>ll_data.sql 备份全部数据库
+</code></pre></div>
+<p>Linux:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>mysql -uroot -proot 进入mysql命令交互终端
+<a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>    create database dreamgo<span class="p">;</span> 新建数据库
+<a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>    drop database dreamgo； 删除数据库
+<a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a>    show databases<span class="p">;</span> 列出所有数据库
+<a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>    use database_name<span class="p">;</span> 使用某个数据库
+</code></pre></div>
+<p>通用：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a>mysql --version 查看mysql版本
+<a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>mysqldump -uroot -p dreamgo &gt;C:<span class="se">\d</span>reamgo.sql 备份一个数据库 需要迁移的两个数据库版本相同
+<a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>mysqldump -uroot -p database_name &lt;C:<span class="se">\d</span>reamgo.sql 恢复数据提示成功但是无表被添加
+<a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a>mysql -uroot -p database_name &lt;C:<span class="se">\d</span>reamgo.sql 恢复数据成功
+<a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a>mysql_upgrade -uroot -proot --force 提示系统的session表不存在时执行
+</code></pre></div>
+<h3 id="5apache">5、Apache模块配置</h3>
+<p>pip 安装wsgi的库时会自动向/etc/apache2/mods-available/中添加wsgi.conf和wsgi.load</p>
+<p>wsgi.load:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
+<a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>mod_wsgi.so位于文件夹/usr/lib/apache2/modules/中
+</code></pre></div>
+<p>Apache默认的日志文件位于/var/log/apache2/error.log</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>配置虚拟主机：ErrorLog /django/dreamgo/error.log
+</code></pre></div>
+<p>安装xsendfile,用于文件上传下载。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>sudo apt-get install libapache2-mod-xsendfile
+<a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a>sudo a2enmod xsendfile
+</code></pre></div>
+<h3 id="6">6、文件操作</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>sudo touch xxx.etx 新建文件
+<a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>sudo mkdir xxx 新建目录
+<a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>sudo mv dir1 dir2 剪切文件夹
+<a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a>sudo rm -rf dir 删除文件夹
+</code></pre></div>
+<h3 id="7">7、配置项目</h3>
+<p>Pillow安装错误</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>sudo apt-get install python3-dev
+<a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>sudo apt-get install libjpeg8-dev
+<a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+<a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a>
+<a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a>pip install pillow
+</code></pre></div>
+<p>如果有log文件，必须对log文件所在的父级目录授权。</p>
+<h3 id="8mysql57">8、安装mysql5.7</h3>
+<p>由于不同版本的sql无法备份，故使用和windows上相同的mysql5.7,linux apt-get 安装的为5.5.54。</p>
+<p>步骤：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>wget http://dev.mysql.com/get/mysql-apt-config_0.6.0-1_all.deb
+<a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>sudo dpkg -i mysql-apt-config_0.6.0-1_all.deb
+<a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>sudo apt-get update
+<a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a>sudo apt-get install mysql-server
+<a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a>mysql --version
+</code></pre></div>
+<ul>
+<li>出现中文乱码错误</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>CREATE DATABASE &lt;dbname&gt; CHARACTER SET utf8;
+<a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>请在创造数据库的时候指定数据库编码集为utf8；
+</code></pre></div>
+<ul>
+<li>pip mysqlclient时提示 mysql_config not found</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>sudo apt-get install libmysqlclient-dev
+</code></pre></div>
+<h3 id="9https_1">9、Https支持</h3>
+<ol>
+<li>
+<p>前往阿里云注册并下载免费CA证书，请注意绑定域名时免费的CA证书仅可绑定单个普通域名，不可绑定通用域名，既若使用的域名是二级域名的话，需要直接绑定到二级域名而不是父级域名。</p>
+</li>
+<li>
+<p>在<code>/etc/apache2/</code>文件夹根目录下创建一个cert文件夹，再在cert文件夹下创建一个<code>blog_dreamgotech_com</code>文件夹，拷贝阿里云下载的证书压缩包中的四个文件到在<code>/etc/apache2/cert/blog_dreamgotech_com/</code>文件夹下。</p>
+</li>
+<li>
+<p>开启<code>ssl</code>以及<code>rewrite</code>模块</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>sudo a2enmod rewrite
+<a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a>sudo a2enmod ssl
+</code></pre></div>
+<ol>
+<li>确认<code>ports.conf</code>如下：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="na">Listen 80</span><span class="w"></span>
+<a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>
+<a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="na">&lt;IfModule ssl_module&gt;</span><span class="w"></span>
+<a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="w">    </span><span class="na">Listen 443</span><span class="w"></span>
+<a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="na">&lt;/IfModule&gt;</span><span class="w"></span>
+<a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a>
+<a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="na">&lt;IfModule mod_gnutls.c&gt;</span><span class="w"></span>
+<a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">    </span><span class="na">Listen 443</span><span class="w"></span>
+<a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="na">&lt;/IfModule&gt;</span><span class="w"></span>
+</code></pre></div>
+<ol>
+<li>配置<code>blog.conf</code>文件为</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="na">&lt;VirtualHost *:80&gt;</span><span class="w"></span>
+<a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a><span class="w">    </span><span class="c1"># Http重定向至Https站点</span><span class="w"></span>
+<a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a><span class="w">    </span><span class="na">RewriteEngine On</span><span class="w"></span>
+<a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a><span class="w">    </span><span class="na">RewriteCond %{HTTPS} off</span><span class="w"></span>
+<a id="__codelineno-59-5" name="__codelineno-59-5" href="#__codelineno-59-5"></a><span class="w">    </span><span class="na">RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI}</span><span class="w"></span>
+<a id="__codelineno-59-6" name="__codelineno-59-6" href="#__codelineno-59-6"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+<a id="__codelineno-59-7" name="__codelineno-59-7" href="#__codelineno-59-7"></a>
+<a id="__codelineno-59-8" name="__codelineno-59-8" href="#__codelineno-59-8"></a><span class="na">&lt;VirtualHost *:443&gt;</span><span class="w"></span>
+<a id="__codelineno-59-9" name="__codelineno-59-9" href="#__codelineno-59-9"></a><span class="w">    </span><span class="na">ServerName blog.dreamgotech.com</span><span class="w"></span>
+<a id="__codelineno-59-10" name="__codelineno-59-10" href="#__codelineno-59-10"></a><span class="w">    </span><span class="na">ServerAdmin ykh@dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-59-11" name="__codelineno-59-11" href="#__codelineno-59-11"></a>
+<a id="__codelineno-59-12" name="__codelineno-59-12" href="#__codelineno-59-12"></a><span class="w">    </span><span class="na">DocumentRoot /django/Blog/</span><span class="w"></span>
+<a id="__codelineno-59-13" name="__codelineno-59-13" href="#__codelineno-59-13"></a>
+<a id="__codelineno-59-14" name="__codelineno-59-14" href="#__codelineno-59-14"></a><span class="w">    </span><span class="na">SSLEngine on</span><span class="w"></span>
+<a id="__codelineno-59-15" name="__codelineno-59-15" href="#__codelineno-59-15"></a><span class="w">    </span><span class="c1"># 添加 SSL 协议支持协议，去掉不安全的协议</span><span class="w"></span>
+<a id="__codelineno-59-16" name="__codelineno-59-16" href="#__codelineno-59-16"></a><span class="w">    </span><span class="na">SSLProtocol all -SSLv2 -SSLv3</span><span class="w"></span>
+<a id="__codelineno-59-17" name="__codelineno-59-17" href="#__codelineno-59-17"></a><span class="w">    </span><span class="c1"># 修改加密套件如下</span><span class="w"></span>
+<a id="__codelineno-59-18" name="__codelineno-59-18" href="#__codelineno-59-18"></a><span class="w">    </span><span class="na">SSLCipherSuite HIGH:!RC4:!MD5:!aNULL:!eNULL:!NULL:!DH:!EDH:!EXP:+MEDIUM</span><span class="w"></span>
+<a id="__codelineno-59-19" name="__codelineno-59-19" href="#__codelineno-59-19"></a><span class="w">    </span><span class="na">SSLHonorCipherOrder on</span><span class="w"></span>
+<a id="__codelineno-59-20" name="__codelineno-59-20" href="#__codelineno-59-20"></a><span class="w">    </span><span class="c1"># 证书公钥配置</span><span class="w"></span>
+<a id="__codelineno-59-21" name="__codelineno-59-21" href="#__codelineno-59-21"></a><span class="w">    </span><span class="na">SSLCertificateFile cert/blog_dreamgotech_com/public.pem</span><span class="w"></span>
+<a id="__codelineno-59-22" name="__codelineno-59-22" href="#__codelineno-59-22"></a><span class="w">    </span><span class="c1"># 证书私钥配置</span><span class="w"></span>
+<a id="__codelineno-59-23" name="__codelineno-59-23" href="#__codelineno-59-23"></a><span class="w">    </span><span class="na">SSLCertificateKeyFile cert/blog_dreamgotech_com/xxxx.key</span><span class="w"></span>
+<a id="__codelineno-59-24" name="__codelineno-59-24" href="#__codelineno-59-24"></a><span class="w">    </span><span class="c1"># 证书链配置，如果该属性开头有 &#39;#&#39;字符，请删除掉</span><span class="w"></span>
+<a id="__codelineno-59-25" name="__codelineno-59-25" href="#__codelineno-59-25"></a><span class="w">    </span><span class="na">SSLCertificateChainFile cert/blog_dreamgotech_com/chain.pem</span><span class="w"></span>
+<a id="__codelineno-59-26" name="__codelineno-59-26" href="#__codelineno-59-26"></a>
+<a id="__codelineno-59-27" name="__codelineno-59-27" href="#__codelineno-59-27"></a><span class="w">    </span><span class="na">Alias /static /django/Blog/static/</span><span class="w"></span>
+<a id="__codelineno-59-28" name="__codelineno-59-28" href="#__codelineno-59-28"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/static/&gt;</span><span class="w"></span>
+<a id="__codelineno-59-29" name="__codelineno-59-29" href="#__codelineno-59-29"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-59-30" name="__codelineno-59-30" href="#__codelineno-59-30"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-59-31" name="__codelineno-59-31" href="#__codelineno-59-31"></a>
+<a id="__codelineno-59-32" name="__codelineno-59-32" href="#__codelineno-59-32"></a><span class="w">    </span><span class="na">Alias /media /django/Blog/media/</span><span class="w"></span>
+<a id="__codelineno-59-33" name="__codelineno-59-33" href="#__codelineno-59-33"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/media/&gt;</span><span class="w"></span>
+<a id="__codelineno-59-34" name="__codelineno-59-34" href="#__codelineno-59-34"></a><span class="w">        </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-59-35" name="__codelineno-59-35" href="#__codelineno-59-35"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-59-36" name="__codelineno-59-36" href="#__codelineno-59-36"></a>
+<a id="__codelineno-59-37" name="__codelineno-59-37" href="#__codelineno-59-37"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /django/Blog/Blog/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-59-38" name="__codelineno-59-38" href="#__codelineno-59-38"></a><span class="w">    </span><span class="na">&lt;Directory /django/Blog/Blog&gt;</span><span class="w"></span>
+<a id="__codelineno-59-39" name="__codelineno-59-39" href="#__codelineno-59-39"></a><span class="w">         </span><span class="na">&lt;Files wsgi.py&gt;</span><span class="w"></span>
+<a id="__codelineno-59-40" name="__codelineno-59-40" href="#__codelineno-59-40"></a><span class="w">             </span><span class="na">Require all granted</span><span class="w"></span>
+<a id="__codelineno-59-41" name="__codelineno-59-41" href="#__codelineno-59-41"></a><span class="w">         </span><span class="na">&lt;/Files&gt;</span><span class="w"></span>
+<a id="__codelineno-59-42" name="__codelineno-59-42" href="#__codelineno-59-42"></a><span class="w">    </span><span class="na">&lt;/Directory&gt;</span><span class="w"></span>
+<a id="__codelineno-59-43" name="__codelineno-59-43" href="#__codelineno-59-43"></a>
+<a id="__codelineno-59-44" name="__codelineno-59-44" href="#__codelineno-59-44"></a><span class="w">    </span><span class="na">WSGIPassAuthorization On</span><span class="w"></span>
+<a id="__codelineno-59-45" name="__codelineno-59-45" href="#__codelineno-59-45"></a><span class="w">    </span><span class="na">WSGIDaemonProcess blog.dreamgo.tech python-path</span><span class="o">=</span><span class="s">/django/Blog python-home=/django/Blog/environment</span><span class="w"></span>
+<a id="__codelineno-59-46" name="__codelineno-59-46" href="#__codelineno-59-46"></a><span class="w">    </span><span class="na">WSGIProcessGroup blog.dreamgo.tech</span><span class="w"></span>
+<a id="__codelineno-59-47" name="__codelineno-59-47" href="#__codelineno-59-47"></a><span class="w">    </span><span class="na">WSGIScriptAlias / /django/Blog/Blog/wsgi.py</span><span class="w"></span>
+<a id="__codelineno-59-48" name="__codelineno-59-48" href="#__codelineno-59-48"></a>
+<a id="__codelineno-59-49" name="__codelineno-59-49" href="#__codelineno-59-49"></a><span class="w">    </span><span class="na">ErrorLog /django/Blog/log/error.log</span><span class="w"></span>
+<a id="__codelineno-59-50" name="__codelineno-59-50" href="#__codelineno-59-50"></a><span class="w">    </span><span class="na">CustomLog /django/Blog/log/access.log combined</span><span class="w"></span>
+<a id="__codelineno-59-51" name="__codelineno-59-51" href="#__codelineno-59-51"></a><span class="na">&lt;/VirtualHost&gt;</span><span class="w"></span>
+</code></pre></div>
+<ol>
+<li>重启Apache</li>
+</ol>
+<h3 id="10pip_1">10、pip修改源</h3>
+<p>window上修改user/Administrator/AppData/Local/pip/pip.ini为</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="na">[global]  </span><span class="w"></span>
+<a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="na">index-url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">http://pypi.douban.com/simple/ </span><span class="w"></span>
+<a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a><span class="na">[install] </span><span class="w"></span>
+<a id="__codelineno-60-4" name="__codelineno-60-4" href="#__codelineno-60-4"></a><span class="na">trusted-host</span><span class="o">=</span><span class="s">pypi.douban.com </span><span class="w"></span>
+</code></pre></div>
+<p>阿里云的linux云服务器自动会修改源为阿里云，配置本地linux主机pip配置文件：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>sudo mkdir ~/.pip
+<a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="nb">cd</span> ~/.pip
+<a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a>sudo touch pip.conf
+<a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a>sudo gedit pip.conf
+<a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a>内容修改如上
+</code></pre></div>
+<h3 id="11mysql_1">11、mysql自动备份</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>sudo apt-get install automysqlbackup
+<a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a>安装时若提示选择mail时使用左右键选中OK继续即可
+<a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a>
+<a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a>automysqlbackup的默认配置文件位于/etc/default/automysqlbackup文件
+<a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a>sudo gedit /etc/default/automysqlbackup
+<a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a>
+<a id="__codelineno-62-7" name="__codelineno-62-7" href="#__codelineno-62-7"></a>新建备份目录<span class="s2">&quot;/django/mysql_backup&quot;</span>并赋予777权限
+</code></pre></div>
+<p>automysqlbackup,需要配置账户、密码、备份目录、备份频率、待备份数据库名称列表:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1"># By default, the Debian version of automysqlbackup will use:</span>
+<a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="c1"># mysqldump --defaults-file=/etc/mysql/debian.cnf</span>
+<a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="c1"># but you might want to overwrite with a specific user &amp; pass.</span>
+<a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="c1"># To do this, simply edit bellow.</span>
+<a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a>
+<a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a><span class="c1"># Username to access the MySQL server e.g. dbuser</span>
+<a id="__codelineno-63-7" name="__codelineno-63-7" href="#__codelineno-63-7"></a><span class="nv">USERNAME</span><span class="o">=</span><span class="s2">&quot;root&quot;</span>
+<a id="__codelineno-63-8" name="__codelineno-63-8" href="#__codelineno-63-8"></a>
+<a id="__codelineno-63-9" name="__codelineno-63-9" href="#__codelineno-63-9"></a><span class="c1"># Username to access the MySQL server e.g. password</span>
+<a id="__codelineno-63-10" name="__codelineno-63-10" href="#__codelineno-63-10"></a><span class="nv">PASSWORD</span><span class="o">=</span><span class="s2">&quot;root&quot;</span>
+<a id="__codelineno-63-11" name="__codelineno-63-11" href="#__codelineno-63-11"></a>
+<a id="__codelineno-63-12" name="__codelineno-63-12" href="#__codelineno-63-12"></a><span class="c1"># Host name (or IP address) of MySQL server e.g localhost</span>
+<a id="__codelineno-63-13" name="__codelineno-63-13" href="#__codelineno-63-13"></a><span class="nv">DBHOST</span><span class="o">=</span>localhost
+<a id="__codelineno-63-14" name="__codelineno-63-14" href="#__codelineno-63-14"></a>
+<a id="__codelineno-63-15" name="__codelineno-63-15" href="#__codelineno-63-15"></a><span class="c1"># List of DBNAMES for Daily/Weekly Backup e.g. &quot;DB1 DB2 DB3&quot;</span>
+<a id="__codelineno-63-16" name="__codelineno-63-16" href="#__codelineno-63-16"></a><span class="c1"># Note that it&#39;s absolutely normal that the db named &quot;mysql&quot; is not in this</span>
+<a id="__codelineno-63-17" name="__codelineno-63-17" href="#__codelineno-63-17"></a><span class="c1"># list, as it&#39;s added later by the script. See the MDBNAMES directives below</span>
+<a id="__codelineno-63-18" name="__codelineno-63-18" href="#__codelineno-63-18"></a><span class="c1"># in this file (advanced options).</span>
+<a id="__codelineno-63-19" name="__codelineno-63-19" href="#__codelineno-63-19"></a><span class="c1"># This is ONLY a convenient default, if you don&#39;t like it, don&#39;t complain</span>
+<a id="__codelineno-63-20" name="__codelineno-63-20" href="#__codelineno-63-20"></a><span class="c1"># and write your own.</span>
+<a id="__codelineno-63-21" name="__codelineno-63-21" href="#__codelineno-63-21"></a><span class="c1"># The following is a quick hack that will find the names of the databases by</span>
+<a id="__codelineno-63-22" name="__codelineno-63-22" href="#__codelineno-63-22"></a><span class="c1"># reading the mysql folder content. Feel free to replace by something else.</span>
+<a id="__codelineno-63-23" name="__codelineno-63-23" href="#__codelineno-63-23"></a><span class="nv">DBNAMES</span><span class="o">=</span><span class="s2">&quot;all&quot;</span>
+<a id="__codelineno-63-24" name="__codelineno-63-24" href="#__codelineno-63-24"></a>
+<a id="__codelineno-63-25" name="__codelineno-63-25" href="#__codelineno-63-25"></a><span class="c1"># Backup directory location e.g /backups</span>
+<a id="__codelineno-63-26" name="__codelineno-63-26" href="#__codelineno-63-26"></a><span class="c1"># Folders inside this one will be created (daily, weekly, etc.), and the</span>
+<a id="__codelineno-63-27" name="__codelineno-63-27" href="#__codelineno-63-27"></a><span class="c1"># subfolders will be database names. Note that backups will be owned by</span>
+<a id="__codelineno-63-28" name="__codelineno-63-28" href="#__codelineno-63-28"></a><span class="c1"># root, with Unix rights 0600.</span>
+<a id="__codelineno-63-29" name="__codelineno-63-29" href="#__codelineno-63-29"></a><span class="nv">BACKUPDIR</span><span class="o">=</span><span class="s2">&quot;/django/mysql_backup&quot;</span>
+<a id="__codelineno-63-30" name="__codelineno-63-30" href="#__codelineno-63-30"></a>
+<a id="__codelineno-63-31" name="__codelineno-63-31" href="#__codelineno-63-31"></a><span class="c1"># Mail setup</span>
+<a id="__codelineno-63-32" name="__codelineno-63-32" href="#__codelineno-63-32"></a><span class="c1"># What would you like to be mailed to you?</span>
+<a id="__codelineno-63-33" name="__codelineno-63-33" href="#__codelineno-63-33"></a><span class="c1"># - log   : send only log file</span>
+<a id="__codelineno-63-34" name="__codelineno-63-34" href="#__codelineno-63-34"></a><span class="c1"># - files : send log file and sql files as attachments (see docs)</span>
+<a id="__codelineno-63-35" name="__codelineno-63-35" href="#__codelineno-63-35"></a><span class="c1"># - stdout : will simply output the log to the screen if run manually.</span>
+<a id="__codelineno-63-36" name="__codelineno-63-36" href="#__codelineno-63-36"></a><span class="c1"># - quiet : Only send logs if an error occurs to the MAILADDR.</span>
+<a id="__codelineno-63-37" name="__codelineno-63-37" href="#__codelineno-63-37"></a><span class="nv">MAILCONTENT</span><span class="o">=</span><span class="s2">&quot;quiet&quot;</span>
+<a id="__codelineno-63-38" name="__codelineno-63-38" href="#__codelineno-63-38"></a>
+<a id="__codelineno-63-39" name="__codelineno-63-39" href="#__codelineno-63-39"></a><span class="c1"># Set the maximum allowed email size in k. (4000 = approx 5MB email [see</span>
+<a id="__codelineno-63-40" name="__codelineno-63-40" href="#__codelineno-63-40"></a><span class="c1"># docs])</span>
+<a id="__codelineno-63-41" name="__codelineno-63-41" href="#__codelineno-63-41"></a><span class="nv">MAXATTSIZE</span><span class="o">=</span><span class="s2">&quot;4000&quot;</span>
+<a id="__codelineno-63-42" name="__codelineno-63-42" href="#__codelineno-63-42"></a>
+<a id="__codelineno-63-43" name="__codelineno-63-43" href="#__codelineno-63-43"></a><span class="c1"># Email Address to send mail to? (user@domain.com)</span>
+<a id="__codelineno-63-44" name="__codelineno-63-44" href="#__codelineno-63-44"></a><span class="nv">MAILADDR</span><span class="o">=</span><span class="s2">&quot;ykh@dreamgo.tech&quot;</span>
+<a id="__codelineno-63-45" name="__codelineno-63-45" href="#__codelineno-63-45"></a>
+<a id="__codelineno-63-46" name="__codelineno-63-46" href="#__codelineno-63-46"></a><span class="c1"># ============================================================</span>
+<a id="__codelineno-63-47" name="__codelineno-63-47" href="#__codelineno-63-47"></a><span class="c1"># === ADVANCED OPTIONS ( Read the doc&#39;s below for details )===</span>
+<a id="__codelineno-63-48" name="__codelineno-63-48" href="#__codelineno-63-48"></a><span class="c1">#=============================================================</span>
+<a id="__codelineno-63-49" name="__codelineno-63-49" href="#__codelineno-63-49"></a>
+<a id="__codelineno-63-50" name="__codelineno-63-50" href="#__codelineno-63-50"></a><span class="c1"># List of DBBNAMES for Monthly Backups.</span>
+<a id="__codelineno-63-51" name="__codelineno-63-51" href="#__codelineno-63-51"></a><span class="nv">MDBNAMES</span><span class="o">=</span><span class="s2">&quot;mysql </span><span class="nv">$DBNAMES</span><span class="s2">&quot;</span>
+<a id="__codelineno-63-52" name="__codelineno-63-52" href="#__codelineno-63-52"></a>
+<a id="__codelineno-63-53" name="__codelineno-63-53" href="#__codelineno-63-53"></a><span class="c1"># List of DBNAMES to EXLUCDE if DBNAMES are set to all (must be in &quot; quotes)</span>
+<a id="__codelineno-63-54" name="__codelineno-63-54" href="#__codelineno-63-54"></a><span class="nv">DBEXCLUDE</span><span class="o">=</span><span class="s2">&quot;information_schema performance_schema sys&quot;</span>
+<a id="__codelineno-63-55" name="__codelineno-63-55" href="#__codelineno-63-55"></a>
+<a id="__codelineno-63-56" name="__codelineno-63-56" href="#__codelineno-63-56"></a><span class="c1"># Include CREATE DATABASE in backup?</span>
+<a id="__codelineno-63-57" name="__codelineno-63-57" href="#__codelineno-63-57"></a><span class="nv">CREATE_DATABASE</span><span class="o">=</span>yes
+<a id="__codelineno-63-58" name="__codelineno-63-58" href="#__codelineno-63-58"></a>
+<a id="__codelineno-63-59" name="__codelineno-63-59" href="#__codelineno-63-59"></a><span class="c1"># Separate backup directory and file for each DB? (yes or no)</span>
+<a id="__codelineno-63-60" name="__codelineno-63-60" href="#__codelineno-63-60"></a><span class="nv">SEPDIR</span><span class="o">=</span>yes
+<a id="__codelineno-63-61" name="__codelineno-63-61" href="#__codelineno-63-61"></a>
+<a id="__codelineno-63-62" name="__codelineno-63-62" href="#__codelineno-63-62"></a><span class="c1"># Which day do you want weekly backups? (1 to 7 where 1 is Monday)</span>
+<a id="__codelineno-63-63" name="__codelineno-63-63" href="#__codelineno-63-63"></a><span class="nv">DOWEEKLY</span><span class="o">=</span><span class="m">6</span>
+<a id="__codelineno-63-64" name="__codelineno-63-64" href="#__codelineno-63-64"></a>
+<a id="__codelineno-63-65" name="__codelineno-63-65" href="#__codelineno-63-65"></a><span class="c1"># Choose Compression type. (gzip or bzip2)</span>
+<a id="__codelineno-63-66" name="__codelineno-63-66" href="#__codelineno-63-66"></a><span class="nv">COMP</span><span class="o">=</span>gzip
+<a id="__codelineno-63-67" name="__codelineno-63-67" href="#__codelineno-63-67"></a>
+<a id="__codelineno-63-68" name="__codelineno-63-68" href="#__codelineno-63-68"></a><span class="c1"># Compress communications between backup server and MySQL server?</span>
+<a id="__codelineno-63-69" name="__codelineno-63-69" href="#__codelineno-63-69"></a><span class="nv">COMMCOMP</span><span class="o">=</span>no
+<a id="__codelineno-63-70" name="__codelineno-63-70" href="#__codelineno-63-70"></a>
+<a id="__codelineno-63-71" name="__codelineno-63-71" href="#__codelineno-63-71"></a><span class="c1"># Additionally keep a copy of the most recent backup in a seperate</span>
+<a id="__codelineno-63-72" name="__codelineno-63-72" href="#__codelineno-63-72"></a><span class="c1"># directory.</span>
+<a id="__codelineno-63-73" name="__codelineno-63-73" href="#__codelineno-63-73"></a><span class="nv">LATEST</span><span class="o">=</span>no
+<a id="__codelineno-63-74" name="__codelineno-63-74" href="#__codelineno-63-74"></a>
+<a id="__codelineno-63-75" name="__codelineno-63-75" href="#__codelineno-63-75"></a><span class="c1">#  The maximum size of the buffer for client/server communication. e.g. 16MB</span>
+<a id="__codelineno-63-76" name="__codelineno-63-76" href="#__codelineno-63-76"></a><span class="c1">#  (maximum is 1GB)</span>
+<a id="__codelineno-63-77" name="__codelineno-63-77" href="#__codelineno-63-77"></a><span class="nv">MAX_ALLOWED_PACKET</span><span class="o">=</span>
+<a id="__codelineno-63-78" name="__codelineno-63-78" href="#__codelineno-63-78"></a>
+<a id="__codelineno-63-79" name="__codelineno-63-79" href="#__codelineno-63-79"></a><span class="c1">#  For connections to localhost. Sometimes the Unix socket file must be</span>
+<a id="__codelineno-63-80" name="__codelineno-63-80" href="#__codelineno-63-80"></a><span class="c1">#  specified.</span>
+<a id="__codelineno-63-81" name="__codelineno-63-81" href="#__codelineno-63-81"></a><span class="nv">SOCKET</span><span class="o">=</span>
+<a id="__codelineno-63-82" name="__codelineno-63-82" href="#__codelineno-63-82"></a>
+<a id="__codelineno-63-83" name="__codelineno-63-83" href="#__codelineno-63-83"></a><span class="c1"># Command to run before backups (uncomment to use)</span>
+<a id="__codelineno-63-84" name="__codelineno-63-84" href="#__codelineno-63-84"></a><span class="c1">#PREBACKUP=&quot;/etc/mysql-backup-pre&quot;</span>
+<a id="__codelineno-63-85" name="__codelineno-63-85" href="#__codelineno-63-85"></a>
+<a id="__codelineno-63-86" name="__codelineno-63-86" href="#__codelineno-63-86"></a><span class="c1"># Command run after backups (uncomment to use)</span>
+<a id="__codelineno-63-87" name="__codelineno-63-87" href="#__codelineno-63-87"></a><span class="c1">#POSTBACKUP=&quot;/etc/mysql-backup-post&quot;</span>
+<a id="__codelineno-63-88" name="__codelineno-63-88" href="#__codelineno-63-88"></a>
+<a id="__codelineno-63-89" name="__codelineno-63-89" href="#__codelineno-63-89"></a><span class="c1"># Backup of stored procedures and routines (comment to remove)</span>
+<a id="__codelineno-63-90" name="__codelineno-63-90" href="#__codelineno-63-90"></a><span class="nv">ROUTINES</span><span class="o">=</span>yes
+</code></pre></div>
+<p>执行命令</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a>sudo automysqlbackup /etc/default/automysqlbackup 
+</code></pre></div>
+<p>运行配置即可在对应的备份目录看到备份的数据库文件</p>
+<h3 id="12xfce4">12、阿里云上xfce4中文乱码</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a>下载中文支持包：
+<a id="__codelineno-65-2" name="__codelineno-65-2" href="#__codelineno-65-2"></a>sudo apt-get install language-pack-zh-hans
+<a id="__codelineno-65-3" name="__codelineno-65-3" href="#__codelineno-65-3"></a>下载中文字体：
+<a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a>sudo apt-get install fonts-wqy-zenhei
+</code></pre></div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../nginx-uwsgi/" class="md-footer__link md-footer__link--prev" aria-label="上一页: Nginx+uWsgi部署Django" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              Nginx+uWsgi部署Django
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../fabric/" class="md-footer__link md-footer__link--next" aria-label="下一页: Fabric部署、维护" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              Fabric部署、维护
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017 - 2022 <a href="https://www.yinkh.top/">YinKH</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      
+    
+  </body>
+</html>
